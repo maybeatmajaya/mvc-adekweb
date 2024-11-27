@@ -1,7 +1,7 @@
 <?php 
 
 class App {
-    protected $controller = 'Home';
+    protected $controller = 'Login';
     protected $method = 'index';
     protected $params = [];
 
@@ -10,10 +10,14 @@ class App {
         $url = $this->parseURL();
 
         // controller
-        if (isset($url[0]) && file_exists('../app/controllers/' . $url["0"] . '.php')) {
+        // code yang diperbarui
+        if ( is_null($url) ) {
+            $url[0] = $this->controller;
+        }
+        // code lama
+        if (file_exists('../app/controllers/' . $url[0] . '.php')) {
             $this->controller = $url[0];
-            unset($url[0]);
-            
+            unset($url[0]);  
         }
 
         require_once '../app/controllers/' . $this->controller . '.php';
@@ -27,12 +31,12 @@ class App {
             }
         }
 
-        // params
+        // parameter/params
         if ( !empty($url) ) {
             $this->params = array_values($url);
         }
 
-        // jalankan controller & method, serta kirimkan params jika ada
+        // jalankan controller & method, serta kirimkan parameter jika ada
         call_user_func_array([$this->controller, $this->method], $this->params);
     }
 
